@@ -9,42 +9,32 @@ class EventSourcer():
 
     def add(self, num: int):
         self.value = self.value + num
-        self.totalSteps += 1;
         self.history.append(self.value)
 
     def subtract(self, num: int):
         self.value = self.value - num
-        self.totalSteps += 1;
         self.history.append(self.value)
 
     def undo(self):
-        if self.totalSteps > 0:
-            self.totalSteps -= 1
-            temp = self.history.pop()
-            self.value = self.history[-1]
-            self.redoOps.append(temp)
+        if len(self.history)>1:
+            self.value = self.history[-2]
         else:
             print("Nothing to undo")
-        self.totalSteps += 1;
 
     def redo(self):
-        if len(self.redoOps) > 0:
-            self.totalSteps -= 1
-            temp = self.redoOps.pop()
-            self.history.append(temp)
+        if len(self.history)>0:
             self.value = self.history[-1]
         else:
-            print("Nothing to undo")
-        self.totalSteps += 1
+            print("Nothing to redo")
 
     def bulk_undo(self, steps: int):
-        while steps>0:
-            self.undo()
-            steps = steps - 1
-        self.totalSteps += 1
+        if (steps == len(self.history)):
+                self.value = 0
+        if (len(self.history) > steps):
+            self.value = self.history[-2 - (steps) + 1]
+
 
     def bulk_redo(self, steps: int):
-        while steps>0:
-            self.redo()
-            steps = steps - 1
-        self.totalSteps += 1
+        if(len(self.history)>steps):
+            self.value = self.history[-1]
+
