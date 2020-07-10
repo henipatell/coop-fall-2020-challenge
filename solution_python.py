@@ -4,8 +4,8 @@ class EventSourcer():
     def __init__(self):
         self.value = 0
         self.totalSteps = 0
-        self.history = []
-        #["Add", "Substract", "Undo", "Redo", "Bulk_Undo", "Bulk_Redo"]
+        self.history = [self.value]
+        self.redoOps = []
 
     def add(self, num: int):
         self.value = self.value + num
@@ -20,16 +20,19 @@ class EventSourcer():
     def undo(self):
         if self.totalSteps > 0:
             self.totalSteps -= 1
-            self.history.pop()
+            temp = self.history.pop()
+            self.value = self.history[-1]
+            self.redoOps.append(temp)
         else:
             print("Nothing to undo")
         self.totalSteps += 1;
 
     def redo(self):
-        if self.totalSteps > 0:
+        if len(self.redoOps) > 0:
             self.totalSteps -= 1
-            temp = self.history.pop()
+            temp = self.redoOps.pop()
             self.history.append(temp)
+            self.value = self.history[-1]
         else:
             print("Nothing to undo")
         self.totalSteps += 1
